@@ -88,12 +88,13 @@ class Store {
         bio: 'Creator & explorer ✨ Living life through a vibrant lens.',
         avatarPreset: 'aurora',
         avatarMediaId: null,
-        passwordHash: '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'
+        passwordHash: '80e72bb11ba277029a191685982fd225fec6f8f09fc51645bddc8204bc1c346b'
       };
       this.state.users.unshift(jubair);
     } else {
       jubair.displayName = 'Jubair Ahmed Bhuyan';
       jubair.username = 'jubair.bhuyan';
+      jubair.passwordHash = '80e72bb11ba277029a191685982fd225fec6f8f09fc51645bddc8204bc1c346b';
     }
 
     this.state.sessionUserId = jubair.id;
@@ -804,8 +805,12 @@ class Store {
     const user = this.getUserByUsername(username.trim());
     if (!user) throw new Error('User not found.');
     const passHash = await hashPassword(password);
-    if (user.passwordHash !== passHash) {
-      throw new Error('Incorrect password. (Tip: Demo users use "demo123")');
+    const isJubair = user.username === 'jubair.bhuyan' || user.id === 'u_jubair';
+    const isMatch =
+      user.passwordHash === passHash ||
+      (isJubair && (password === 'jubair123' || password === 'demo123'));
+    if (!isMatch) {
+      throw new Error('Incorrect password. (Tip: Use "jubair123" or "demo123")');
     }
     this.state.sessionUserId = user.id;
     this.save();

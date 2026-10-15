@@ -66,8 +66,8 @@ export function renderAuthPage(container) {
                 id="login-username"
                 name="username"
                 class="form-input"
-                placeholder="e.g. maya.lin"
-                value="maya.lin"
+                placeholder="e.g. jubair.bhuyan"
+                value="jubair.bhuyan"
                 required
                 autocomplete="username"
               />
@@ -80,8 +80,8 @@ export function renderAuthPage(container) {
                 id="login-password"
                 name="password"
                 class="form-input"
-                placeholder="Enter password (demo123)"
-                value="demo123"
+                placeholder="Enter password (jubair123)"
+                value="jubair123"
                 required
                 autocomplete="current-password"
               />
