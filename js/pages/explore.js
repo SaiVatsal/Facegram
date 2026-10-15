@@ -55,9 +55,21 @@ function renderExploreResultsMarkup(query) {
                   post.mediaId
                 )}" muted playsinline preload="metadata"></video>`;
               } else if (post.mediaType === 'image' && post.mediaId) {
+                const isDirect =
+                  post.mediaId.startsWith('.') ||
+                  post.mediaId.startsWith('/') ||
+                  post.mediaId.startsWith('assets/');
+                const directSrc = isDirect
+                  ? post.mediaId
+                  : post.mediaId === 'seed_media_sunrise'
+                  ? './assets/mountain_sunrise.jpg'
+                  : post.mediaId === 'seed_media_portrait'
+                  ? './assets/fashion_portrait.jpg'
+                  : '';
+                const srcAttr = directSrc ? `src="${escapeHTML(directSrc)}"` : '';
                 tileInner = `<img data-media-id="${escapeHTML(
                   post.mediaId
-                )}" alt="${escapeHTML(post.caption || 'Explore post')}" loading="lazy" />`;
+                )}" ${srcAttr} alt="${escapeHTML(post.caption || 'Explore post')}" loading="lazy" />`;
               } else {
                 const grad = post.bgGradient || 'grad-ocean';
                 tileInner = `<div class="grid-tile-text ${escapeHTML(

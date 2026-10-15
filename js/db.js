@@ -70,6 +70,19 @@ export async function getMediaBlob(mediaId) {
 
 export async function getMediaObjectURL(mediaId) {
   if (!mediaId) return null;
+  if (
+    mediaId.startsWith('./') ||
+    mediaId.startsWith('../') ||
+    mediaId.startsWith('/') ||
+    mediaId.startsWith('assets/') ||
+    mediaId.startsWith('http://') ||
+    mediaId.startsWith('https://') ||
+    mediaId.startsWith('data:')
+  ) {
+    return mediaId;
+  }
+  if (mediaId === 'seed_media_sunrise') return './assets/mountain_sunrise.jpg';
+  if (mediaId === 'seed_media_portrait') return './assets/fashion_portrait.jpg';
   if (objectUrlCache.has(mediaId)) {
     return objectUrlCache.get(mediaId);
   }

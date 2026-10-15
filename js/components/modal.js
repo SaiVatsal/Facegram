@@ -212,7 +212,15 @@ export async function openStoryViewerModal(storyId) {
         <div class="story-viewer-stage ${story.mediaId ? '' : escapeHTML(gradClass)}">
           ${
             story.mediaId
-              ? `<img data-media-id="${escapeHTML(story.mediaId)}" alt="Story by ${escapeHTML(author ? author.username : '')}" />`
+              ? `<img data-media-id="${escapeHTML(story.mediaId)}" src="${escapeHTML(
+                  story.mediaId.startsWith('.') || story.mediaId.startsWith('/')
+                    ? story.mediaId
+                    : story.mediaId === 'seed_media_sunrise'
+                    ? './assets/mountain_sunrise.jpg'
+                    : story.mediaId === 'seed_media_portrait'
+                    ? './assets/fashion_portrait.jpg'
+                    : ''
+                )}" alt="Story by ${escapeHTML(author ? author.username : '')}" />`
               : `<div class="post-text-card ${escapeHTML(gradClass)}"><span>${escapeHTML(story.text)}</span></div>`
           }
         </div>

@@ -69,7 +69,263 @@ class Store {
     this.applyTheme();
     if (!this.state.seeded || this.state.users.length === 0) {
       await this.seedDemoData();
+    } else {
+      this.ensureJubairAccount();
+      this.ensureFeaturedContent();
     }
+  }
+
+  ensureJubairAccount() {
+    if (!this.state.users || !Array.isArray(this.state.users)) {
+      this.state.users = [];
+    }
+    let jubair = this.state.users.find((u) => u.username === 'jubair.bhuyan' || u.id === 'u_jubair');
+    if (!jubair) {
+      jubair = {
+        id: 'u_jubair',
+        username: 'jubair.bhuyan',
+        displayName: 'Jubair Ahmed Bhuyan',
+        bio: 'Creator & explorer ✨ Living life through a vibrant lens.',
+        avatarPreset: 'aurora',
+        avatarMediaId: null,
+        passwordHash: '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'
+      };
+      this.state.users.unshift(jubair);
+    } else {
+      jubair.displayName = 'Jubair Ahmed Bhuyan';
+      jubair.username = 'jubair.bhuyan';
+    }
+
+    this.state.sessionUserId = jubair.id;
+
+    if (!this.state.saved) this.state.saved = {};
+    if (!this.state.saved[jubair.id]) {
+      this.state.saved[jubair.id] = ['p_sunrise', 'p_portrait', 'p_103', 'p_104'];
+    }
+
+    if (!this.state.follows) this.state.follows = [];
+    const hasJubairFollows = this.state.follows.some((f) => f.followerId === jubair.id);
+    if (!hasJubairFollows) {
+      this.state.follows.push(
+        { followerId: jubair.id, followingId: 'u_alex' },
+        { followerId: jubair.id, followingId: 'u_sara' },
+        { followerId: jubair.id, followingId: 'u_elena' },
+        { followerId: jubair.id, followingId: 'u_maya' },
+        { followerId: 'u_alex', followingId: jubair.id },
+        { followerId: 'u_sara', followingId: jubair.id },
+        { followerId: 'u_noah', followingId: jubair.id }
+      );
+    }
+
+    if (!this.state.stories) this.state.stories = [];
+    const hasJubairStory = this.state.stories.some((s) => s.userId === jubair.id);
+    if (!hasJubairStory) {
+      const now = Date.now();
+      const min = 60 * 1000;
+      this.state.stories.unshift({
+        id: 'st_jubair',
+        userId: jubair.id,
+        mediaId: './assets/mountain_sunrise.jpg',
+        text: 'Sunrise vibes over the mountains 🌄',
+        bgGradient: 'grad-sunset',
+        seenBy: [],
+        createdAt: now - 10 * min
+      });
+    }
+
+    if (!this.state.messages) this.state.messages = [];
+    const hasJubairMsg = this.state.messages.some((m) => m.senderId === jubair.id || m.receiverId === jubair.id);
+    if (!hasJubairMsg) {
+      const now = Date.now();
+      const min = 60 * 1000;
+      this.state.messages.unshift(
+        {
+          id: 'm_j1',
+          senderId: 'u_alex',
+          receiverId: jubair.id,
+          text: 'Hey Jubair! Welcome to Facegram! Loved your new updates.',
+          mediaId: null,
+          createdAt: now - 35 * min
+        },
+        {
+          id: 'm_j2',
+          senderId: jubair.id,
+          receiverId: 'u_alex',
+          text: 'Thanks Alex! Excited to connect and share new work here.',
+          mediaId: null,
+          createdAt: now - 20 * min
+        },
+        {
+          id: 'm_j3',
+          senderId: 'u_sara',
+          receiverId: jubair.id,
+          text: 'Hi Jubair! Looking forward to your creative projects.',
+          mediaId: null,
+          createdAt: now - 15 * min
+        }
+      );
+    }
+
+    if (!this.state.notifications) this.state.notifications = [];
+    const hasJubairNotif = this.state.notifications.some((n) => n.userId === jubair.id);
+    if (!hasJubairNotif) {
+      const now = Date.now();
+      const min = 60 * 1000;
+      this.state.notifications.unshift(
+        {
+          id: 'n_j1',
+          userId: jubair.id,
+          actorId: 'u_alex',
+          type: 'reaction',
+          reactionType: 'love',
+          postId: 'p_sunrise',
+          read: false,
+          createdAt: now - 12 * min
+        },
+        {
+          id: 'n_j2',
+          userId: jubair.id,
+          actorId: 'u_sara',
+          type: 'follow',
+          postId: null,
+          read: false,
+          createdAt: now - 8 * min
+        }
+      );
+    }
+
+    this.save();
+  }
+
+  ensureFeaturedContent() {
+    const hasSunrise = this.state.posts && this.state.posts.some((p) => p.id === 'p_sunrise');
+    const hasPortrait = this.state.posts && this.state.posts.some((p) => p.id === 'p_portrait');
+    if (hasSunrise && hasPortrait) return;
+
+    const now = Date.now();
+    const min = 60 * 1000;
+
+    const newPosts = [];
+    if (!hasSunrise) {
+      newPosts.push({
+        id: 'p_sunrise',
+        userId: 'u_maya',
+        mediaId: './assets/mountain_sunrise.jpg',
+        mediaType: 'image',
+        bgGradient: null,
+        caption: 'Sunrise over the rhododendron peaks — nothing beats early morning golden light breaking across the mist. 🌸⛰️',
+        createdAt: now - 5 * min
+      });
+    }
+    if (!hasPortrait) {
+      newPosts.push({
+        id: 'p_portrait',
+        userId: 'u_elena',
+        mediaId: './assets/fashion_portrait.jpg',
+        mediaType: 'image',
+        bgGradient: null,
+        caption: 'Courtyard morning in this lace blazer silhouette. Celebrating quiet moments & spring colors. ✨',
+        createdAt: now - 12 * min
+      });
+    }
+
+    this.state.posts = [...newPosts, ...(this.state.posts || [])];
+
+    if (!this.state.reactions) this.state.reactions = {};
+    if (!this.state.reactions.p_sunrise) {
+      this.state.reactions.p_sunrise = {
+        u_alex: 'wow',
+        u_sara: 'love',
+        u_noah: 'love',
+        u_elena: 'like',
+        u_liam: 'love'
+      };
+    }
+    if (!this.state.reactions.p_portrait) {
+      this.state.reactions.p_portrait = {
+        u_maya: 'love',
+        u_alex: 'like',
+        u_sara: 'love',
+        u_noah: 'wow',
+        u_liam: 'love'
+      };
+    }
+
+    if (!this.state.comments) this.state.comments = [];
+    const commentIds = new Set(this.state.comments.map((c) => c.id));
+    const addComments = [
+      {
+        id: 'c_s1',
+        postId: 'p_sunrise',
+        userId: 'u_alex',
+        text: 'The lighting on these ridges is unreal!',
+        createdAt: now - 3 * min
+      },
+      {
+        id: 'c_s2',
+        postId: 'p_sunrise',
+        userId: 'u_sara',
+        text: 'Those rhododendrons in the morning mist... pure magic.',
+        createdAt: now - 2 * min
+      },
+      {
+        id: 'c_p1',
+        postId: 'p_portrait',
+        userId: 'u_maya',
+        text: 'Stunning portrait! That color palette is gorgeous.',
+        createdAt: now - 10 * min
+      },
+      {
+        id: 'c_p2',
+        postId: 'p_portrait',
+        userId: 'u_alex',
+        text: 'Love the contrast and natural lighting!',
+        createdAt: now - 8 * min
+      }
+    ];
+    for (const c of addComments) {
+      if (!commentIds.has(c.id)) {
+        this.state.comments.unshift(c);
+      }
+    }
+
+    if (!this.state.stories) this.state.stories = [];
+    const storyIds = new Set(this.state.stories.map((s) => s.id));
+    if (!storyIds.has('st_sunrise')) {
+      this.state.stories.unshift({
+        id: 'st_sunrise',
+        userId: 'u_maya',
+        mediaId: './assets/mountain_sunrise.jpg',
+        text: 'Golden peak sunrise 🌄',
+        bgGradient: 'grad-sunset',
+        seenBy: [],
+        createdAt: now - 15 * min
+      });
+    }
+    if (!storyIds.has('st_portrait')) {
+      this.state.stories.unshift({
+        id: 'st_portrait',
+        userId: 'u_elena',
+        mediaId: './assets/fashion_portrait.jpg',
+        text: 'Courtyard vibes ✨',
+        bgGradient: 'grad-berry',
+        seenBy: [],
+        createdAt: now - 30 * min
+      });
+    }
+
+    const elena = this.getUserById('u_elena');
+    if (elena && !elena.avatarMediaId) {
+      elena.avatarMediaId = './assets/fashion_portrait.jpg';
+    }
+
+    if (this.state.saved && this.state.saved.u_maya) {
+      if (!this.state.saved.u_maya.includes('p_sunrise')) this.state.saved.u_maya.unshift('p_sunrise');
+      if (!this.state.saved.u_maya.includes('p_portrait')) this.state.saved.u_maya.unshift('p_portrait');
+    }
+
+    this.save();
+    this.notify();
   }
 
   async seedDemoData() {
@@ -79,6 +335,15 @@ class Store {
     const hr = 60 * min;
 
     const demoUsers = [
+      {
+        id: 'u_jubair',
+        username: 'jubair.bhuyan',
+        displayName: 'Jubair Ahmed Bhuyan',
+        bio: 'Creator & explorer ✨ Living life through a vibrant lens.',
+        avatarPreset: 'aurora',
+        avatarMediaId: null,
+        passwordHash: defaultPassHash
+      },
       {
         id: 'u_maya',
         username: 'maya.lin',
@@ -121,7 +386,7 @@ class Store {
         displayName: 'Elena Rostova',
         bio: 'Creative coder exploring generative shaders and kinetic typography.',
         avatarPreset: 'violet',
-        avatarMediaId: null,
+        avatarMediaId: './assets/fashion_portrait.jpg',
         passwordHash: defaultPassHash
       },
       {
@@ -154,6 +419,24 @@ class Store {
     }
 
     const demoPosts = [
+      {
+        id: 'p_sunrise',
+        userId: 'u_maya',
+        mediaId: './assets/mountain_sunrise.jpg',
+        mediaType: 'image',
+        bgGradient: null,
+        caption: 'Sunrise over the rhododendron peaks — nothing beats early morning golden light breaking across the mist. 🌸⛰️',
+        createdAt: now - 5 * min
+      },
+      {
+        id: 'p_portrait',
+        userId: 'u_elena',
+        mediaId: './assets/fashion_portrait.jpg',
+        mediaType: 'image',
+        bgGradient: null,
+        caption: 'Courtyard morning in this lace blazer silhouette. Celebrating quiet moments & spring colors. ✨',
+        createdAt: now - 12 * min
+      },
       {
         id: 'p_101',
         userId: 'u_maya',
@@ -213,10 +496,38 @@ class Store {
     this.state = {
       seeded: true,
       theme: this.state.theme || 'light',
-      sessionUserId: 'u_maya',
+      sessionUserId: 'u_jubair',
       users: demoUsers,
       posts: demoPosts,
       comments: [
+        {
+          id: 'c_s1',
+          postId: 'p_sunrise',
+          userId: 'u_alex',
+          text: 'The lighting on these ridges is unreal!',
+          createdAt: now - 3 * min
+        },
+        {
+          id: 'c_s2',
+          postId: 'p_sunrise',
+          userId: 'u_sara',
+          text: 'Those rhododendrons in the morning mist... pure magic.',
+          createdAt: now - 2 * min
+        },
+        {
+          id: 'c_p1',
+          postId: 'p_portrait',
+          userId: 'u_maya',
+          text: 'Stunning portrait! That color palette is gorgeous.',
+          createdAt: now - 10 * min
+        },
+        {
+          id: 'c_p2',
+          postId: 'p_portrait',
+          userId: 'u_alex',
+          text: 'Love the contrast and natural lighting!',
+          createdAt: now - 8 * min
+        },
         {
           id: 'c_1',
           postId: 'p_101',
@@ -247,6 +558,20 @@ class Store {
         }
       ],
       reactions: {
+        p_sunrise: {
+          u_alex: 'wow',
+          u_sara: 'love',
+          u_noah: 'love',
+          u_elena: 'like',
+          u_liam: 'love'
+        },
+        p_portrait: {
+          u_maya: 'love',
+          u_alex: 'like',
+          u_sara: 'love',
+          u_noah: 'wow',
+          u_liam: 'love'
+        },
         p_101: { u_alex: 'love', u_sara: 'wow', u_elena: 'love', u_noah: 'like' },
         p_102: { u_maya: 'like', u_elena: 'haha', u_liam: 'love' },
         p_103: { u_maya: 'love', u_noah: 'wow' },
@@ -255,6 +580,13 @@ class Store {
         p_106: { u_maya: 'love', u_sara: 'like' }
       },
       follows: [
+        { followerId: 'u_jubair', followingId: 'u_alex' },
+        { followerId: 'u_jubair', followingId: 'u_sara' },
+        { followerId: 'u_jubair', followingId: 'u_elena' },
+        { followerId: 'u_jubair', followingId: 'u_maya' },
+        { followerId: 'u_alex', followingId: 'u_jubair' },
+        { followerId: 'u_sara', followingId: 'u_jubair' },
+        { followerId: 'u_noah', followingId: 'u_jubair' },
         { followerId: 'u_maya', followingId: 'u_alex' },
         { followerId: 'u_maya', followingId: 'u_sara' },
         { followerId: 'u_maya', followingId: 'u_elena' },
@@ -263,9 +595,37 @@ class Store {
         { followerId: 'u_noah', followingId: 'u_maya' }
       ],
       saved: {
-        u_maya: ['p_103', 'p_104']
+        u_jubair: ['p_sunrise', 'p_portrait', 'p_103', 'p_104'],
+        u_maya: ['p_sunrise', 'p_portrait', 'p_103', 'p_104']
       },
       stories: [
+        {
+          id: 'st_jubair',
+          userId: 'u_jubair',
+          mediaId: './assets/mountain_sunrise.jpg',
+          text: 'Sunrise vibes over the mountains 🌄',
+          bgGradient: 'grad-sunset',
+          seenBy: [],
+          createdAt: now - 10 * min
+        },
+        {
+          id: 'st_sunrise',
+          userId: 'u_maya',
+          mediaId: './assets/mountain_sunrise.jpg',
+          text: 'Golden peak sunrise 🌄',
+          bgGradient: 'grad-sunset',
+          seenBy: [],
+          createdAt: now - 15 * min
+        },
+        {
+          id: 'st_portrait',
+          userId: 'u_elena',
+          mediaId: './assets/fashion_portrait.jpg',
+          text: 'Courtyard vibes ✨',
+          bgGradient: 'grad-berry',
+          seenBy: [],
+          createdAt: now - 30 * min
+        },
         {
           id: 'st_1',
           userId: 'u_maya',
@@ -305,6 +665,30 @@ class Store {
       ],
       messages: [
         {
+          id: 'm_j1',
+          senderId: 'u_alex',
+          receiverId: 'u_jubair',
+          text: 'Hey Jubair! Welcome to Facegram! Loved your new updates.',
+          mediaId: null,
+          createdAt: now - 35 * min
+        },
+        {
+          id: 'm_j2',
+          senderId: 'u_jubair',
+          receiverId: 'u_alex',
+          text: 'Thanks Alex! Excited to connect and share new work here.',
+          mediaId: null,
+          createdAt: now - 20 * min
+        },
+        {
+          id: 'm_j3',
+          senderId: 'u_sara',
+          receiverId: 'u_jubair',
+          text: 'Hi Jubair! Looking forward to your creative projects.',
+          mediaId: null,
+          createdAt: now - 15 * min
+        },
+        {
           id: 'm_1',
           senderId: 'u_alex',
           receiverId: 'u_maya',
@@ -330,6 +714,25 @@ class Store {
         }
       ],
       notifications: [
+        {
+          id: 'n_j1',
+          userId: 'u_jubair',
+          actorId: 'u_alex',
+          type: 'reaction',
+          reactionType: 'love',
+          postId: 'p_sunrise',
+          read: false,
+          createdAt: now - 12 * min
+        },
+        {
+          id: 'n_j2',
+          userId: 'u_jubair',
+          actorId: 'u_sara',
+          type: 'follow',
+          postId: null,
+          read: false,
+          createdAt: now - 8 * min
+        },
         {
           id: 'n_1',
           userId: 'u_maya',

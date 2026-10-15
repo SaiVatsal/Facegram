@@ -175,7 +175,21 @@ export function renderAvatar(user, sizeClass = 'avatar-md') {
     return `<span class="avatar ${escapeHTML(sizeClass)}">${PRESET_AVATARS.aurora}</span>`;
   }
   if (user.avatarMediaId) {
-    return `<span class="avatar ${escapeHTML(sizeClass)}"><img data-media-id="${escapeHTML(user.avatarMediaId)}" alt="${escapeHTML(user.username)}" /></span>`;
+    const isDirect =
+      user.avatarMediaId.startsWith('.') ||
+      user.avatarMediaId.startsWith('/') ||
+      user.avatarMediaId.startsWith('assets/');
+    const directSrc = isDirect
+      ? user.avatarMediaId
+      : user.avatarMediaId === 'seed_media_portrait'
+      ? './assets/fashion_portrait.jpg'
+      : user.avatarMediaId === 'seed_media_sunrise'
+      ? './assets/mountain_sunrise.jpg'
+      : '';
+    const srcAttr = directSrc ? `src="${escapeHTML(directSrc)}"` : '';
+    return `<span class="avatar ${escapeHTML(sizeClass)}"><img data-media-id="${escapeHTML(
+      user.avatarMediaId
+    )}" ${srcAttr} alt="${escapeHTML(user.username)}" /></span>`;
   }
   const presetSvg = PRESET_AVATARS[user.avatarPreset] || PRESET_AVATARS.aurora;
   return `<span class="avatar ${escapeHTML(sizeClass)}">${presetSvg}</span>`;

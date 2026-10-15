@@ -24,9 +24,22 @@ export function renderPostCard(post) {
       ></video>
     `;
   } else if (post.mediaType === 'image' && post.mediaId) {
+    const isDirect =
+      post.mediaId.startsWith('.') ||
+      post.mediaId.startsWith('/') ||
+      post.mediaId.startsWith('assets/');
+    const directSrc = isDirect
+      ? post.mediaId
+      : post.mediaId === 'seed_media_sunrise'
+      ? './assets/mountain_sunrise.jpg'
+      : post.mediaId === 'seed_media_portrait'
+      ? './assets/fashion_portrait.jpg'
+      : '';
+    const srcAttr = directSrc ? `src="${escapeHTML(directSrc)}"` : '';
     mediaContentHTML = `
       <img
         data-media-id="${escapeHTML(post.mediaId)}"
+        ${srcAttr}
         alt="Post by ${escapeHTML(author.username)}"
         loading="lazy"
       />

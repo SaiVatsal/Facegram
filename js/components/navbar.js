@@ -28,6 +28,14 @@ export function renderNavbar(container, activeRoute = '/feed') {
           <span class="brand-title">Facegram</span>
         </a>
 
+        <a href="${escapeHTML(profileHref)}" class="sidebar-top-user-card" title="View Profile">
+          ${renderAvatar(user, 'avatar-sm')}
+          <div class="sidebar-top-user-meta">
+            <span class="sidebar-top-user-name">${escapeHTML(user.displayName)}</span>
+            <span class="sidebar-top-user-handle">@${escapeHTML(user.username)}</span>
+          </div>
+        </a>
+
         <div class="nav-links">
           <a href="#/feed" class="nav-item ${activeRoute === '/feed' ? 'active' : ''}">
             <span class="nav-icon-wrap">${ICON.home}</span>
@@ -79,10 +87,19 @@ export function renderNavbar(container, activeRoute = '/feed') {
 
     <!-- Mobile Top Header -->
     <div class="mobile-header">
-      <a href="#/feed" class="brand-link">
-        ${getLogoSVG('logo-svg')}
-        <span class="brand-title">Facegram</span>
-      </a>
+      <div class="mobile-header-left">
+        <a href="#/feed" class="brand-link brand-link-compact">
+          ${getLogoSVG('logo-svg')}
+          <span class="brand-title">Facegram</span>
+        </a>
+        <a href="${escapeHTML(profileHref)}" class="mobile-header-user-tag" title="Profile: ${escapeHTML(user.displayName)}">
+          ${renderAvatar(user, 'avatar-xs')}
+          <div class="mobile-header-user-meta">
+            <span class="mobile-header-user-name">${escapeHTML(user.displayName)}</span>
+            <span class="mobile-header-user-handle">@${escapeHTML(user.username)}</span>
+          </div>
+        </a>
+      </div>
 
       <div class="mobile-header-actions">
         <button type="button" class="icon-btn" data-action="open-create-post" aria-label="Create Post">

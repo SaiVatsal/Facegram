@@ -52,6 +52,20 @@ export function renderFeedPage(container, query = {}) {
   container.innerHTML = `
     <div class="feed-layout">
       <div class="feed-column">
+        <div class="feed-top-user-banner">
+          <a href="#/profile/${encodeURIComponent(currentUser.username)}" class="feed-top-user-link" title="View your profile">
+            ${renderAvatar(currentUser, 'avatar-md')}
+            <div class="feed-top-user-meta">
+              <span class="feed-top-user-title">Active Account</span>
+              <span class="feed-top-user-name">${escapeHTML(currentUser.displayName)}</span>
+              <span class="feed-top-user-handle">@${escapeHTML(currentUser.username)}</span>
+            </div>
+          </a>
+          <button type="button" class="btn btn-secondary btn-sm" data-action="open-create-post">
+            + New Post
+          </button>
+        </div>
+
         ${renderStoryBar()}
 
         <div class="composer-trigger-card">
