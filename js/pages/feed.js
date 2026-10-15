@@ -1,5 +1,5 @@
 import { store } from '../store.js';
-import { escapeHTML, renderAvatar } from '../utils.js';
+import { escapeHTML, renderAvatar, ICON } from '../utils.js';
 import { renderStoryBar } from '../components/story-bar.js';
 import { renderPostCard } from '../components/post-card.js';
 import { openPostDetailModal } from '../components/modal.js';
@@ -78,6 +78,38 @@ export function renderFeedPage(container, query = {}) {
             What's on your mind, ${escapeHTML(currentUser.displayName.split(' ')[0])}? Share a photo or status...
           </button>
         </div>
+
+        <section class="feed-reels-preview-card" aria-label="Trending Reels">
+          <div class="feed-reels-header">
+            <div class="feed-reels-title">
+              <span class="feed-reels-icon">${ICON.reels}</span>
+              <span>Trending Reels</span>
+            </div>
+            <a href="#/reels" class="btn btn-ghost btn-xs">Watch All &rarr;</a>
+          </div>
+          <div class="feed-reels-scroll">
+            ${store
+              .getReels()
+              .slice(0, 6)
+              .map((reel) => {
+                const author = store.getUserById(reel.userId);
+                return `
+                  <a href="#/reels/${encodeURIComponent(reel.id)}" class="feed-reel-item" title="Watch reel by @${escapeHTML(
+                  author ? author.username : 'creator'
+                )}">
+                    <video src="${escapeHTML(reel.videoUrl)}" muted playsinline preload="metadata"></video>
+                    <div class="feed-reel-item-overlay">
+                      <span class="feed-reel-item-play">${ICON.play}</span>
+                      <span class="feed-reel-item-author">@${escapeHTML(
+                        author ? author.username : 'creator'
+                      )}</span>
+                    </div>
+                  </a>
+                `;
+              })
+              .join('')}
+          </div>
+        </section>
 
         ${postsHTML}
       </div>

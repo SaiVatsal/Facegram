@@ -22,8 +22,166 @@ const defaultState = () => ({
   saved: {},
   stories: [],
   messages: [],
-  notifications: []
+  notifications: [],
+  reels: []
 });
+
+export const DEMO_REELS = [
+  {
+    id: 'reel_1',
+    userId: 'u_jubair',
+    videoUrl: './assets/reels/reel_sunrise.mp4',
+    caption: 'Chasing the first golden light over alpine ridges. Nothing compares to misty mountain sunrises. 🌄✨ #FacegramReels #Sunrise #Adventure',
+    audioTitle: 'Golden Hour Reverie • Original Audio by @jubair.bhuyan',
+    views: '124.5K',
+    likes: ['u_maya', 'u_alex', 'u_sara', 'u_noah', 'u_elena', 'u_liam'],
+    comments: [
+      { id: 'rc_1_1', userId: 'u_maya', text: 'The atmosphere in this morning light is incredible!', createdAt: Date.now() - 3600000 },
+      { id: 'rc_1_2', userId: 'u_alex', text: 'Perfection! What camera did you use for this?', createdAt: Date.now() - 1800000 }
+    ],
+    createdAt: Date.now() - 4 * 3600000
+  },
+  {
+    id: 'reel_2',
+    userId: 'u_alex',
+    videoUrl: './assets/reels/reel_neon_grid.mp4',
+    caption: 'Synthwave aesthetics & perspective grid experiments. 80s analog nostalgia meets generative design. ⚡🏎️ #Synthwave #RetroCode #Motion',
+    audioTitle: 'Cyberpunk Drive • @alex.rivera',
+    views: '89.2K',
+    likes: ['u_jubair', 'u_elena', 'u_maya', 'u_liam'],
+    comments: [
+      { id: 'rc_2_1', userId: 'u_elena', text: 'That neon glow shader is mesmerizing!', createdAt: Date.now() - 5000000 }
+    ],
+    createdAt: Date.now() - 8 * 3600000
+  },
+  {
+    id: 'reel_3',
+    userId: 'u_noah',
+    videoUrl: './assets/reels/reel_ocean_swell.mp4',
+    caption: 'Glassy Pacific swell at low tide. The ocean rhythm is pure therapy after a long week. 🌊🏄‍♂️ #SurfVibes #OceanLovers #Coast',
+    audioTitle: 'Bioluminescent Swell • Natural Sound',
+    views: '210.3K',
+    likes: ['u_jubair', 'u_sara', 'u_alex', 'u_maya'],
+    comments: [
+      { id: 'rc_3_1', userId: 'u_jubair', text: 'Water looks so clean and crisp! Need a surf trip soon.', createdAt: Date.now() - 7200000 }
+    ],
+    createdAt: Date.now() - 12 * 3600000
+  },
+  {
+    id: 'reel_4',
+    userId: 'u_liam',
+    videoUrl: './assets/reels/reel_coffee_art.mp4',
+    caption: 'Slow morning pour-over ritual & latte rosette bloom. Good coffee isn’t rushed. ☕🌿 #SpecialtyCoffee #BaristaDaily #MorningRoutine',
+    audioTitle: 'Cafe Morning Lo-fi • Acoustic Beats',
+    views: '67.8K',
+    likes: ['u_maya', 'u_sara', 'u_jubair'],
+    comments: [
+      { id: 'rc_4_1', userId: 'u_sara', text: 'That foam texture is art! 👏', createdAt: Date.now() - 9000000 }
+    ],
+    createdAt: Date.now() - 15 * 3600000
+  },
+  {
+    id: 'reel_5',
+    userId: 'u_elena',
+    videoUrl: './assets/reels/reel_abstract_flow.mp4',
+    caption: 'Iridescent liquid dynamics rendered on WebGL canvas. Exploring light dispersion and fluid tension. 🔮✨ #CreativeCoding #Design #3D',
+    audioTitle: 'Holographic Spectrum • @elena.rostova',
+    views: '142.1K',
+    likes: ['u_jubair', 'u_alex', 'u_maya', 'u_noah'],
+    comments: [
+      { id: 'rc_5_1', userId: 'u_alex', text: 'This belongs in a digital museum.', createdAt: Date.now() - 11000000 }
+    ],
+    createdAt: Date.now() - 18 * 3600000
+  },
+  {
+    id: 'reel_6',
+    userId: 'u_maya',
+    videoUrl: './assets/reels/reel_aurora.mp4',
+    caption: 'Northern lights dancing over Tromsø. When the solar wind hits the atmosphere, the sky turns into living emerald silk. 🌌❄️ #Aurora #NightSky',
+    audioTitle: 'Arctic Whispers • Polar Atmosphere',
+    views: '345.9K',
+    likes: ['u_jubair', 'u_elena', 'u_alex', 'u_sara', 'u_liam', 'u_noah'],
+    comments: [
+      { id: 'rc_6_1', userId: 'u_jubair', text: 'Bucketlist view! Unreal colors.', createdAt: Date.now() - 14000000 }
+    ],
+    createdAt: Date.now() - 22 * 3600000
+  },
+  {
+    id: 'reel_7',
+    userId: 'u_jubair',
+    videoUrl: './assets/reels/reel_urban_vibes.mp4',
+    caption: 'Reflections and symmetry across the metropolitan glass canyons during golden hour flare. 🏙️🌆 #UrbanArchitecture #ModernLines #CityLife',
+    audioTitle: 'Sunset Boulevard Echoes • @jubair.bhuyan',
+    views: '98.4K',
+    likes: ['u_maya', 'u_alex', 'u_sara'],
+    comments: [
+      { id: 'rc_7_1', userId: 'u_maya', text: 'Golden hour architectural photography at its best!', createdAt: Date.now() - 16000000 }
+    ],
+    createdAt: Date.now() - 26 * 3600000
+  },
+  {
+    id: 'reel_8',
+    userId: 'u_sara',
+    videoUrl: './assets/reels/reel_sakura_bloom.mp4',
+    caption: 'Spring breeze through Kyoto cherry blossoms. Taking a moment to breathe and enjoy the quiet bloom. 🌸🍃 #Sakura #SpringTime #Serenity',
+    audioTitle: 'Petals on the Wind • Koto Harmony',
+    views: '185.0K',
+    likes: ['u_jubair', 'u_maya', 'u_noah'],
+    comments: [
+      { id: 'rc_8_1', userId: 'u_liam', text: 'So soothing and peaceful.', createdAt: Date.now() - 20000000 }
+    ],
+    createdAt: Date.now() - 30 * 3600000
+  },
+  {
+    id: 'reel_9',
+    userId: 'u_alex',
+    videoUrl: './assets/reels/reel_kinetic_studio.mp4',
+    caption: 'Bauhaus geometry & kinetic typography tests. High contrast, primary colors, functional rhythm. 📐🔴 #GraphicDesign #Bauhaus #Typography',
+    audioTitle: 'Studio Minimal Pulse • Electronic',
+    views: '54.2K',
+    likes: ['u_jubair', 'u_elena'],
+    comments: [],
+    createdAt: Date.now() - 34 * 3600000
+  },
+  {
+    id: 'reel_10',
+    userId: 'u_elena',
+    videoUrl: './assets/reels/reel_soundwaves.mp4',
+    caption: 'Audio frequency visualizer in real-time. Pulsing rhythm synced to low-end frequencies. 🎧🔊 #AudioVisual #Cyberpunk #Visualizer',
+    audioTitle: 'Bassline Frequency 128BPM • Original Mix',
+    views: '112.7K',
+    likes: ['u_jubair', 'u_alex', 'u_noah'],
+    comments: [
+      { id: 'rc_10_1', userId: 'u_alex', text: 'Need this as a desktop wallpaper!', createdAt: Date.now() - 25000000 }
+    ],
+    createdAt: Date.now() - 38 * 3600000
+  },
+  {
+    id: 'reel_11',
+    userId: 'u_noah',
+    videoUrl: './assets/reels/reel_sunset_highway.mp4',
+    caption: 'Pacific Coast Highway sunset cruise. Windows down, Pacific breeze, endless horizon. 🌅🚙 #PCH #SunsetDrive #California',
+    audioTitle: 'Highway Horizon • Lo-fi Coast',
+    views: '159.6K',
+    likes: ['u_jubair', 'u_maya', 'u_sara', 'u_alex'],
+    comments: [],
+    createdAt: Date.now() - 42 * 3600000
+  },
+  {
+    id: 'reel_12',
+    userId: 'u_jubair',
+    videoUrl: './assets/reels/reel_lofi_rain.mp4',
+    caption: 'Rainy late night in the studio with warm coffee and ambient beats. Cozy creative flow state. 🌧️☕🕯️ #LoFiVibes #RainyNight #CreativeLife',
+    audioTitle: 'Rain On Studio Windows • Ambient Piano by @jubair.bhuyan',
+    views: '230.1K',
+    likes: ['u_maya', 'u_alex', 'u_sara', 'u_elena', 'u_liam', 'u_noah'],
+    comments: [
+      { id: 'rc_12_1', userId: 'u_sara', text: 'This is the exact mood I needed tonight.', createdAt: Date.now() - 30000000 },
+      { id: 'rc_12_2', userId: 'u_alex', text: 'Incredible lighting and atmosphere, Jubair!', createdAt: Date.now() - 28000000 }
+    ],
+    createdAt: Date.now() - 48 * 3600000
+  }
+];
 
 class Store {
   constructor() {
@@ -195,6 +353,10 @@ class Store {
       );
     }
 
+    if (!this.state.reels || this.state.reels.length === 0) {
+      this.state.reels = [...DEMO_REELS];
+    }
+
     this.save();
   }
 
@@ -323,6 +485,10 @@ class Store {
     if (this.state.saved && this.state.saved.u_maya) {
       if (!this.state.saved.u_maya.includes('p_sunrise')) this.state.saved.u_maya.unshift('p_sunrise');
       if (!this.state.saved.u_maya.includes('p_portrait')) this.state.saved.u_maya.unshift('p_portrait');
+    }
+
+    if (!this.state.reels || this.state.reels.length === 0) {
+      this.state.reels = [...DEMO_REELS];
     }
 
     this.save();
@@ -762,7 +928,8 @@ class Store {
           read: true,
           createdAt: now - 4 * hr
         }
-      ]
+      ],
+      reels: [...DEMO_REELS]
     };
 
     this.save();
@@ -786,6 +953,59 @@ class Store {
 
   getCurrentUser() {
     return this.state.users.find((u) => u.id === this.state.sessionUserId) || null;
+  }
+
+  getReels() {
+    return Array.isArray(this.state.reels) ? this.state.reels : [];
+  }
+
+  getReelById(reelId) {
+    return this.getReels().find((r) => r.id === reelId) || null;
+  }
+
+  isReelLiked(reelId) {
+    const user = this.getCurrentUser();
+    if (!user) return false;
+    const reel = this.getReelById(reelId);
+    return Boolean(reel && Array.isArray(reel.likes) && reel.likes.includes(user.id));
+  }
+
+  toggleReelLike(reelId) {
+    const user = this.getCurrentUser();
+    if (!user) return false;
+    const reel = this.getReelById(reelId);
+    if (!reel) return false;
+    if (!Array.isArray(reel.likes)) reel.likes = [];
+    const idx = reel.likes.indexOf(user.id);
+    let liked = false;
+    if (idx >= 0) {
+      reel.likes.splice(idx, 1);
+      liked = false;
+    } else {
+      reel.likes.push(user.id);
+      liked = true;
+    }
+    this.save();
+    this.notify();
+    return liked;
+  }
+
+  addReelComment(reelId, text) {
+    const user = this.getCurrentUser();
+    if (!user || !text || !text.trim()) return null;
+    const reel = this.getReelById(reelId);
+    if (!reel) return null;
+    if (!Array.isArray(reel.comments)) reel.comments = [];
+    const newComment = {
+      id: uid('rc'),
+      userId: user.id,
+      text: text.trim(),
+      createdAt: Date.now()
+    };
+    reel.comments.unshift(newComment);
+    this.save();
+    this.notify();
+    return newComment;
   }
 
   getUserById(userId) {

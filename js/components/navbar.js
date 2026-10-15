@@ -47,6 +47,11 @@ export function renderNavbar(container, activeRoute = '/feed') {
             <span>Explore</span>
           </a>
 
+          <a href="#/reels" class="nav-item ${activeRoute === '/reels' ? 'active' : ''}">
+            <span class="nav-icon-wrap">${ICON.reels}</span>
+            <span>Reels</span>
+          </a>
+
           <a href="#/messages" class="nav-item ${activeRoute === '/messages' ? 'active' : ''}">
             <span class="nav-icon-wrap">${ICON.messages}</span>
             <span>Messages</span>
@@ -131,6 +136,10 @@ export function renderNavbar(container, activeRoute = '/feed') {
 
       <a href="#/explore" class="icon-btn ${activeRoute === '/explore' ? 'active' : ''}" aria-label="Explore">
         ${ICON.explore}
+      </a>
+
+      <a href="#/reels" class="icon-btn ${activeRoute === '/reels' ? 'active' : ''}" aria-label="Reels">
+        ${ICON.reels}
       </a>
 
       <button type="button" class="icon-btn" data-action="open-create-post" aria-label="Create">

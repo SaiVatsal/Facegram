@@ -7,6 +7,7 @@ import { renderExplorePage } from './pages/explore.js';
 import { renderProfilePage } from './pages/profile.js';
 import { renderMessagesPage } from './pages/messages.js';
 import { renderNotificationsPage } from './pages/notifications.js';
+import { renderReelsPage } from './pages/reels.js';
 
 class Router {
   constructor() {
@@ -57,6 +58,9 @@ class Router {
       route = '/feed';
     } else if (segments[0] === 'explore') {
       route = '/explore';
+    } else if (segments[0] === 'reels') {
+      route = '/reels';
+      if (segments[1]) params.reelId = decodeURIComponent(segments[1]);
     } else if (segments[0] === 'messages') {
       route = '/messages';
       if (segments[1]) params.username = decodeURIComponent(segments[1]);
@@ -131,6 +135,8 @@ class Router {
         renderFeedPage(mainRoot, query);
       } else if (route === '/explore') {
         renderExplorePage(mainRoot, query);
+      } else if (route === '/reels') {
+        renderReelsPage(mainRoot, params.reelId || null);
       } else if (route === '/profile') {
         const targetUsername = params.username || currentUser.username;
         renderProfilePage(mainRoot, targetUsername);

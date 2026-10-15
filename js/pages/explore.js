@@ -103,8 +103,46 @@ function renderExploreResultsMarkup(query) {
         </div>
       `;
 
+  const allReels = store.getReels();
+  const matchingReels = cleanQuery
+    ? allReels.filter((r) => r.caption.toLowerCase().includes(cleanQuery))
+    : allReels;
+
+  const reelsStripHTML =
+    matchingReels.length > 0
+      ? `
+        <section class="explore-reels-section" aria-label="Reels Explorer">
+          <div class="explore-reels-header">
+            <div class="explore-reels-title">
+              <span class="explore-reels-icon">${ICON.reels}</span>
+              <span>Trending Reels</span>
+            </div>
+            <a href="#/reels" class="btn btn-ghost btn-xs">Watch All &rarr;</a>
+          </div>
+          <div class="explore-reels-carousel">
+            ${matchingReels.slice(0, 8).map((reel) => {
+              const author = store.getUserById(reel.userId);
+              return `
+                <a href="#/reels/${encodeURIComponent(reel.id)}" class="explore-reel-card" title="Watch reel by @${escapeHTML(author ? author.username : 'creator')}">
+                  <video src="${escapeHTML(reel.videoUrl)}" muted playsinline preload="metadata"></video>
+                  <div class="explore-reel-card-overlay">
+                    <span class="explore-reel-card-play">${ICON.play}</span>
+                    <span class="explore-reel-card-views">${escapeHTML(reel.views || '120K')}</span>
+                  </div>
+                  <div class="explore-reel-card-bottom">
+                    <span class="explore-reel-card-author">@${escapeHTML(author ? author.username : 'creator')}</span>
+                  </div>
+                </a>
+              `;
+            }).join('')}
+          </div>
+        </section>
+      `
+      : '';
+
   return `
     ${usersStripHTML}
+    ${reelsStripHTML}
     ${gridHTML}
   `;
 }
