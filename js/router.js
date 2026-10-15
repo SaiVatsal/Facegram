@@ -125,6 +125,7 @@ class Router {
       }
 
       mainRoot.classList.remove('auth-mode');
+      mainRoot.classList.toggle('reels-mode', route === '/reels');
       renderNavbar(navRoot, route);
 
       if (routeChanged && !preserveScroll) {
